@@ -68,6 +68,11 @@
             app:layout_constraintBottom_toBottomOf="@+id/button_OpenLink"
             app:layout_constraintEnd_toStartOf="@+id/iv_Share"
             app:layout_constraintTop_toTopOf="@+id/button_OpenLink"
+
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp"
             app:srcCompat="@drawable/ic_favorite" />
 
         <ImageView
@@ -79,7 +84,12 @@
             app:layout_constraintBottom_toBottomOf="@+id/button_OpenLink"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/button_OpenLink"
-            app:srcCompat="@drawable/ic__share" />
+            app:srcCompat="@drawable/ic__share"
+
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

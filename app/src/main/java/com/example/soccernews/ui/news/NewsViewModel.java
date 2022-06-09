@@ -4,25 +4,49 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.soccernews.data.remote.SoccerNewsApi;
 import com.example.soccernews.domain.News;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class NewsViewModel extends ViewModel {
 
-    private final MutableLiveData<List<News>> news;
+    private final MutableLiveData<List<News>> news = new MutableLiveData<>();
+    private final SoccerNewsApi api;
 
     public NewsViewModel() {
-        this.news = new MutableLiveData<>();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://douglasarrudav.github.io/Soccer_News_Api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-        //TODO Remover Mock De Notícias
-        List<News> news = new ArrayList<>();
-        news.add(new News("Ferroviária Tem Desfalque Importante", "Lorem ipsum quisque augue sagittis blandit, id leo integer fames ut sit, nisi dolor proin vivamus. enim vel interdum curabitur mauris ut praesent proin, nibh torquent cubilia curabitur cursus aliquam sodales, eleifend metus varius venenatis urna etiam. volutpat lectus non mattis curae vivamus donec sodales, erat curabitur ut semper consequat. "));
-        news.add(new News("Ferrinha Joga No Sábado", "Lorem ipsum quisque augue sagittis blandit, id leo integer fames ut sit, nisi dolor proin vivamus. enim vel interdum curabitur mauris ut praesent proin, nibh torquent cubilia curabitur cursus aliquam sodales, eleifend metus varius venenatis urna etiam. volutpat lectus non mattis curae vivamus donec sodales, erat curabitur ut semper consequat. "));
-        news.add(new News("Copa Do Mundo Feminina Está Terminando", "Lorem ipsum quisque augue sagittis blandit, id leo integer fames ut sit, nisi dolor proin vivamus. enim vel interdum curabitur mauris ut praesent proin, nibh torquent cubilia curabitur cursus aliquam sodales, eleifend metus varius venenatis urna etiam. volutpat lectus non mattis curae vivamus donec sodales, erat curabitur ut semper consequat. "));
+        api = retrofit.create(SoccerNewsApi.class);
+        this.findNews();
+    }
 
-        this.news.setValue(news);
+    public void findNews() {
+        api.getNews().enqueue(new Callback<List<News>>() {
+            @Override
+            public void onResponse(Call<List<News>> call, Response<List<News>> response) {
+                if (response.isSuccessful()) {
+                    news.setValue(response.body());
+                } else {
+                    //TODO pensar em uma estrategia de tratamento de erros
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<News>> call, Throwable t) {
+                //TODO pensar em uma estrategia de tratamento de erros
+            }
+        });
     }
 
     public LiveData<List<News>> getNews() {
